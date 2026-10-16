@@ -25,6 +25,7 @@ ipq50xx_setup_interfaces()
 		;;
 	cmcc,mr3000d-ci|\
 	cmcc,rax3000q|\
+	h3c,nx54|\
 	linksys,mx2000|\
 	linksys,mx5500|\
 	linksys,spnmx56|\
@@ -66,6 +67,18 @@ ipq50xx_setup_macs()
 	local label_mac=""
 
 	case $board in
+	h3c,nx54)
+		# Label MAC lives in the stock U-Boot environment
+		label_mac=$(mtd_get_mac_ascii 0:appsblenv ethaddr)
+		[ -n "$label_mac" ] || return
+		ucidef_set_interface_macaddr "lan" "$label_mac"
+		ucidef_set_interface_macaddr "wan" "$label_mac"
+		ucidef_set_label_macaddr "$label_mac"
+		# gmac0 (netdev "wan") and gmac1 (DSA conduit "eth1") have no
+		# nvmem MAC source; pin them so stmmac doesn't randomise them
+		ucidef_set_network_device_mac "wan" "$label_mac"
+		ucidef_set_network_device_mac "eth1" "$label_mac"
+		;;
 	mercusys,mr80x-v2|\
 	tplink,archer-ax55-v1)
 		# factory MAC is 6 raw bytes in tp_data/default-mac, mounted

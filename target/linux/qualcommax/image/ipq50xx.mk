@@ -196,6 +196,24 @@ define Device/glinet_gl-x2000
 endef
 TARGET_DEVICES += glinet_gl-x2000
 
+define Device/h3c_nx54
+	$(call Device/FitImageLzma)
+	$(call Device/UbiFit)
+	DEVICE_VENDOR := H3C
+	DEVICE_MODEL := Magic NX54
+	DEVICE_DTS_CONFIG := config@mp03.1
+	SOC := ipq5018
+	BLOCKSIZE := 128k
+	PAGESIZE := 2048
+	IMAGE_SIZE := 46336k
+	NAND_SIZE := 128m
+	DEVICE_PACKAGES := ath11k-firmware-ipq5018-qcn6122 \
+		kmod-ath11k-pci \
+		ath11k-firmware-qcn9074 \
+		ipq-wifi-h3c_nx54
+endef
+TARGET_DEVICES += h3c_nx54
+
 define Device/iodata_wn-dax3000gr
 	$(call Device/FitImageLzma)
 	DEVICE_VENDOR := I-O DATA
